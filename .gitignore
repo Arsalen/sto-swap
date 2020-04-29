@@ -1,0 +1,9 @@
+swap/build/
+node_modules/
+config/*.json
+.vscode/
+package-lock.json
+.env
+TODO
+*.ini
+transactions.sqlite
