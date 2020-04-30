@@ -1,0 +1,207 @@
++ truffle migrate --network live --reset
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+Migrations dry-run (simulation)
+===============================
+> Network name:    'live-fork'
+> Network id:      1
+> Block gas limit: 10000000 (0x989680)
+
+
+1_initial_migration.js
+======================
+   Deploying 'Migrations'
+   ----------------------
+   > block number:        9974724
+   > block timestamp:     1588260253
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.299564032
+   > gas used:            217984 (0x35380)
+   > gas price:           2 gwei
+   > value sent:          0 ETH
+   > total cost:          0.000435968 ETH
+
+   -------------------------------------
+   > Total cost:         0.000435968 ETH
+
+
+6_as_migration.js
+=================
+   Deploying 'AsUSDT'
+   ------------------
+   > block number:        9974726
+   > block timestamp:     1588260296
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.297568598
+   > gas used:            970348 (0xece6c)
+   > gas price:           2 gwei
+   > value sent:          0 ETH
+   > total cost:          0.001940696 ETH
+
+   Deploying 'AsUSDC'
+   ------------------
+   > block number:        9974728
+   > block timestamp:     1588260358
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.295504562
+   > gas used:            977458 (0xeea32)
+   > gas price:           2 gwei
+   > value sent:          0 ETH
+   > total cost:          0.001954916 ETH
+
+   Deploying 'AsDAI'
+   -----------------
+   > block number:        9974730
+   > block timestamp:     1588260428
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.293440358
+   > gas used:            977542 (0xeea86)
+   > gas price:           2 gwei
+   > value sent:          0 ETH
+   > total cost:          0.001955084 ETH
+
+   -------------------------------------
+   > Total cost:         0.005850696 ETH
+
+
+7_proxy_migration.js
+====================
+   Deploying 'AsProxy'
+   -------------------
+   > block number:        9974733
+   > block timestamp:     1588260476
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.291982736
+   > gas used:            646882 (0x9dee2)
+   > gas price:           2 gwei
+   > value sent:          0 ETH
+   > total cost:          0.001293764 ETH
+
+   -------------------------------------
+   > Total cost:         0.001293764 ETH
+
+
+Summary
+=======
+> Total deployments:   5
+> Final cost:          0.007580428 ETH
+
+
+
+Starting migrations...
+======================
+> Network name:    'live'
+> Network id:      1
+> Block gas limit: 9956148 (0x97eb34)
+
+
+1_initial_migration.js
+======================
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0xd3dcfeb8bb0269d39258dbc3a548c9768242dd84d1f4ad10a6e42531566e7520
+- Blocks: 0            Seconds: 0
+   > Blocks: 2            Seconds: 30
+   > contract address:    0xD12a233f262710384cB1fDA97c441E9deB096631
+   > block number:        9974748
+   > block timestamp:     1588260582
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.29534032
+   > gas used:            232984 (0x38e18)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00465968 ETH
+
+
+- Saving migration to chain.
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00465968 ETH
+
+
+6_as_migration.js
+=================
+   Deploying 'AsUSDT'
+   ------------------
+   > transaction hash:    0xf9127860757880048205b148fff4315d887e609145a91529a52a98b6b8f8f253
+- Blocks: 0            Seconds: 0
+   > Blocks: 1            Seconds: 30
+   > contract address:    0xb7863F8E92019d1170e4Aa4889Cfc7294cf8A58A
+   > block number:        9974752
+   > block timestamp:     1588260639
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.27358598
+   > gas used:            1045348 (0xff364)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02090696 ETH
+
+   Deploying 'AsUSDC'
+   ------------------
+   > transaction hash:    0x717e30a3192143776c07cc9db098f004543031e61590491bb537cc597f225291
+- Blocks: 0            Seconds: 0
+   > Blocks: 2            Seconds: 61
+   > contract address:    0x348036D8460f3B9B942866F59c49Ce4355fD703c
+   > block number:        9974755
+   > block timestamp:     1588260673
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.25024562
+   > gas used:            1052458 (0x100f2a)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02104916 ETH
+
+
+   Deploying 'AsDAI'
+   -----------------
+   > transaction hash:    0x30e2964f71ec147b55659aaff03b5f01d65d98d7297592e922d857e492be1df8
+- Blocks: 0            Seconds: 0
+   > Blocks: 3            Seconds: 37
+   > contract address:    0xf2e9F0638979885FdAEc8E1eDf123171AE3b726b
+   > block number:        9974759
+   > block timestamp:     1588260761
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.22690358
+   > gas used:            1052542 (0x100f7e)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02105084 ETH
+
+
+- Saving migration to chain.
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.06300696 ETH
+
+7_proxy_migration.js
+====================
+   Deploying 'AsProxy'
+   -------------------
+   > transaction hash:    0x3a4aaa746e3562f39af80575d2e03701defacd6332e6d2dbfb0733d0bc447f42
+- Blocks: 0            Seconds: 0
+   > Blocks: 2            Seconds: 40
+   > contract address:    0x72bA4B28c93c24666E76F72CA7F0336349aCfFec
+   > block number:        9974764
+   > block timestamp:     1588260823
+   > account:             0xb1ff6fA2C19f8076a6A4F4e8e671844a84643b71
+   > balance:             0.21082736
+   > gas used:            661882 (0xa197a)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.01323764 ETH
+
+- Saving migration to chain.
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.01323764 ETH
+
+
+Summary
+=======
+> Total deployments:   5
+> Final cost:          0.08090428 ETH
