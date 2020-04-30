@@ -69,7 +69,7 @@ pipeline {
 
                     sh 'cp tokens/migrations/1_initial_migration.js migrations'
                     sh 'cp main/migrations/6_as_migration.js main/migrations/7_proxy_migration.js migrations'
-                    sh 'truffle migrate --network ropsten --reset'
+                    sh 'truffle migrate --network live --reset'
                     sh 'rm migrations/*'
                 }
             }
