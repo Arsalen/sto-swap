@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+
+    <script>
+    
+      /* Configure Ethereum provider */
+      
+      const magic = new Magic("<%= MAGIC_PUBLISHABLE_KEY %>", {
+        network: "ropsten"
+      });
+    
+      const web3 = new Web3(magic.rpcProvider);
+      
+      /*  Smart contract values */
+      
+      const contractABI = '[ { "inputs": [ { "internalType": "string", "name": "_message", "type": "string" } ], "name": "setMessage", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "_message", "type": "string" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [], "name": "getMessage", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" } ]';
+      
+      let contractAddress = "0xe6812329Edf25C879c03415719A7aa14A82C8e9e";
+      
+      const render = async () => {
+      
+        const isLoggedIn = await magic.user.isLoggedIn();
+      
+        let metadataHtml = "";
+        let userHtml = "";
+        let contractHtml = "";
+      
+        const target = document.querySelector("#app");
+      
+        if (isLoggedIn) {
+      
+          /* Get user metadata including email */
+          
+          const userMetadata = await magic.user.getMetadata();
+          const network = await web3.eth.net.getNetworkType();
+          const userAddress = (await web3.eth.getAccounts())[0];
+          const userBalance = web3.utils.fromWei(
+            await web3.eth.getBalance(userAddress) // Balance is in wei
+          );
+          
+          metadataHtml = `
+            <div class="container">
+              <h1>Current user: ${userMetadata.email}</h1>
+            </div>
+          `;
+          
+          userHtml = `
+            <div class="container">
+              <h1>Ethereum address</h1>
+              <div class="info">
+                <a href="https://ropsten.etherscan.io/address/${userAddress}" target="_blank">${userAddress}</a>
+              </div>
+              <h1>Network</h1>
+              <div class="info">${network}</div>
+              <h1>Balance</h1>
+              <div class="info">${userBalance} ETH</div>
+            </div>
+          `;
+          
+          let contract = new web3.eth.Contract(
+            
+            JSON.parse(contractABI),
+            contractAddress
+          );
+
+          const currentMessage = await contract.methods.getMessage().call();
+          
+          contractHtml = `
+            <div class="container">
+              <h1>Smart Contract</h1>
+              <div class="info">
+                <a href="https://ropsten.etherscan.io/address/${contractAddress}" target="_blank">${contractAddress}</a>
+              </div>
+              <h1>Message</h1>
+              <div class="info">${currentMessage}</div>
+              <form onsubmit="handleUpdateMsg(event)">
+                <input type="text" name="new-message" class="full-width" required="required" placeholder="New Message" />
+                <button id="btn-update-msg" type="submit">Update Message</button>
+              </form>
+            </div>
+          `;
+        }
+        
+        target.innerHTML =
+          metadataHtml + userHtml + contractHtml;
+      };
+
+
+      const handleUpdateMsg = async e => {
+        
+        e.preventDefault();
+        
+        const newMessage = new FormData(e.target).get("new-message");
+        
+        if (newMessage) {
+          
+          const btnUpdateMsg = document.getElementById("btn-update-msg");
+          
+          btnUpdateMsg.disabled = true;
+          btnUpdateMsg.innerText = "Updating...";
+          
+          const fromAddress = (await web3.eth.getAccounts())[0];
+          
+          const contract = new web3.eth.Contract(
+            
+            JSON.parse(contractABI),
+            contractAddress
+          );
+
+          const receipt = await contract.methods
+            .setMessage(newMessage)
+            .send({ from: fromAddress });
+          
+          console.log("Completed:", receipt);
+          render();
+        }
+      };
+
+    </script>
+
+  </head>
+  <body onload="render()">
+    <div id="app">
+      <div class="container">Loading...</div>
+    </div>
+  </body>
+</html>
