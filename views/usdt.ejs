@@ -1,0 +1,189 @@
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+
+        
+    <script>
+          
+      const magic = new Magic("<%= MAGIC_PUBLISHABLE_KEY %>", {
+        network: "ropsten"
+      });
+    
+      const web3 = new Web3(magic.rpcProvider);
+      
+      const rootUrl = window.location.origin;
+
+      const contracts = <%- JSON.stringify(contracts) %>;
+
+      const stoContract = new web3.eth.Contract( contracts.sto.abi, contracts.sto.address );
+
+      const usdtContract = new web3.eth.Contract( contracts.usdt.abi, contracts.usdt.address );
+
+      const asContract = new web3.eth.Contract( contracts.as.abi, contracts.as.address );
+
+      const proxyContract = new web3.eth.Contract( contracts.proxy.abi, contracts.proxy.address );
+
+      var transaction = "";
+
+      const render = async () => {
+
+        const isLoggedIn = await magic.user.isLoggedIn();
+      
+        let notFoundHtml = "";
+        
+        let userHtml = "";
+        
+        let contractHtml = "";
+        
+        let txHtml = "";
+      
+        const target = document.querySelector("#app");
+      
+        defaultHtml = `
+            <div class="container">
+              <h1>Atomic swap</h1>
+              <button><a href="${rootUrl}">Home</a></button>
+            </div>
+        `;
+
+        if (isLoggedIn) {
+                        
+          const network = await web3.eth.net.getNetworkType();
+
+          const userAddress = (await web3.eth.getAccounts())[0];
+
+          const ethBalance = web3.utils.fromWei(
+
+            await web3.eth.getBalance(userAddress)
+          );
+
+          const usdtBalance = await usdtContract.methods.balanceOf(userAddress).call();
+
+          const stoBalance = await stoContract.methods.balanceOf(userAddress).call();
+          
+          userHtml = `
+            <div class="container">
+              <h1>Ethereum address</h1>
+              <div class="info">
+                <a href="https://ropsten.etherscan.io/address/${userAddress}" target="_blank">${userAddress}</a>
+              </div>
+              <h1>Network</h1>
+              <div class="info">${network}</div>
+              <h1>Balance</h1>
+              <table style="width:10%">
+              <tr><td>${ethBalance}</td> <td>ETH</td></tr>
+              <tr><td>${usdtBalance}</td><td>USDT</td></tr>
+              <tr><td>${stoBalance}</td><td>HBI</td></tr>
+              </table>
+            </div>
+          `;
+
+          usdtHtml = `
+            <div class="container">
+              <h1>USDT</h1>
+              <form onsubmit="handleApproval(event)">
+                <input type="text" name="approvalAmount" class="full-width" required="required" placeholder="Amount" />
+                <button id="btn-approve-amnt" type="submit">Approve</button>
+              </form>
+
+              <form onsubmit="handleDeposit(event)">
+                <input type="text" name="depositAmount" class="full-width" required="required" placeholder="Amount" />
+                <button id="btn-deposit-amnt" type="submit">Deposit</button>
+              </form>
+
+            </div>
+          `;
+
+          txHtml = `
+            <div class="container">
+              <h1>Transaction</h1>
+              <div class="info">
+                <a href="https://ropsten.etherscan.io/tx/${transaction}" target="_blank">${transaction}</a>
+              </div>
+            </div>
+          `;
+
+          target.innerHTML = defaultHtml + userHtml + usdtHtml + txHtml;
+        } else {
+
+          notFoundHtml = `
+            <div class="container">
+              <div class="info">
+                <h2>Please signup or login first!</h2>
+              </div>
+            </div>
+          `;
+
+          target.innerHTML = defaultHtml + notFoundHtml;
+        }
+      };
+
+
+      const handleApproval = async e => {
+        
+        e.preventDefault();
+        
+        const amount = new FormData(e.target).get("approvalAmount");
+        
+        if (amount) {
+          
+          const btnApproveAmnt = document.getElementById("btn-approve-amnt");
+          
+          btnApproveAmnt.disabled = true;
+          btnApproveAmnt.innerText = "Approval...";
+          
+          const userAddress = (await web3.eth.getAccounts())[0];
+          const spender = asContract.options.address;
+
+          const receipt = await usdtContract.methods
+            .approve(spender, amount)
+            .send({ from: userAddress });
+          
+          console.log("Completed:", receipt);
+          
+          render();
+        }
+      };
+
+      const handleDeposit = async e => {
+        
+        e.preventDefault();
+        
+        const amount = new FormData(e.target).get("depositAmount");
+        
+        if (amount) {
+          
+          const btnDepositAmnt = document.getElementById("btn-deposit-amnt");
+          
+          btnDepositAmnt.disabled = true;
+          btnDepositAmnt.innerText = "Deposit...";
+          
+          const userAddress = (await web3.eth.getAccounts())[0];
+          const name = 'usdt';
+
+          const receipt = await proxyContract.methods
+            .deposit(name, amount)
+            .send({ from: userAddress });
+          
+          transaction = receipt.transactionHash;
+
+          console.log("Completed:", receipt);
+          
+          render();
+        }
+      };
+
+    </script>
+
+  </head>
+  <body onload="render()">
+    <div id="app">
+      <div class="container">Loading...</div>
+    </div>
+  </body>
+</html>

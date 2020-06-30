@@ -7,6 +7,9 @@ const passport = require("passport");
 
 const indexRouter = require("./src/routes/index");
 const userRouter = require("./src/routes/user");
+const daiRouter = require("./src/routes/dai");
+const usdtRouter = require("./src/routes/usdt");
+const usdcRouter = require("./src/routes/usdc");
 
 require('dotenv').config({path: '.env'});
 
@@ -36,6 +39,9 @@ app.use(passport.session());
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+app.use("/dai", daiRouter);
+app.use("/usdt", usdtRouter);
+app.use("/usdc", usdcRouter);
 
 const listener = app.listen(process.env.PORT, function() {
   console.log("Listening on port " + listener.address().port);
