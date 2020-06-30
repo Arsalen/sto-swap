@@ -8,3 +8,4 @@ TODO
 *.ini
 transactions.sqlite
 users.db
+pm2.config.js

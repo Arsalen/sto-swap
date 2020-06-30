@@ -6,17 +6,21 @@ pipeline {
 
         stage('Setup') {
 
-            when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('net.ini')} }
+            when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('config/abi.json') && !fileExists('net.ini')} && !fileExists('pm2.config.js') }
             steps {
                 sh 'npm i --save'
                 withCredentials([
                     file(credentialsId: "env", variable: "environment"),
                     file(credentialsId: "config", variable: "configuration"),
+                    file(credentialsId: "abi", variable: "bytecode"),
                     file(credentialsId: "net", variable: "network")
+                    file(credentialsId: "pm2", variable: "daemon")
                 ]) {
                     sh "cp \$environment .env"
                     sh "cp \$configuration config/config.json"
+                    sh "cp \$bytecode config/abi.json"
                     sh "cp \$network net.ini"
+                    sh "cp \$daemon pm2.config.js"
                 }
             }
         }
@@ -89,6 +93,12 @@ pipeline {
                     sh 'truffle migrate --network ropsten --reset'
                     sh 'rm migrations/*'
                 }
+            }
+        }
+
+        stage("RUN") {
+            steps {
+                sh "pm2 start pm2.config.js"
             }
         }
 
