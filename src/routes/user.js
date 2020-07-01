@@ -4,7 +4,7 @@ const router = express.Router();
 require('dotenv').config({path: '.env'});
 
 const Datastore = require("nedb-promise");
-let users = new Datastore({ filename: "users.db", autoload: true });
+let users = new Datastore({ filename: "users.ropsten.db", autoload: true });
 
 /* 1️⃣ Setup Magic Admin SDK */
 const { Magic } = require("@magic-sdk/admin");

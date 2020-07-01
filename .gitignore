@@ -7,5 +7,5 @@ package-lock.json
 TODO
 *.ini
 transactions.sqlite
-users.db
+*.db
 pm2.config.js
