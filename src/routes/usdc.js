@@ -3,8 +3,7 @@ const router = express.Router();
 
 require('dotenv').config({path: '.env'});
 
-const usdcTokenArtifacts = require('../../swap/build/contracts/FiatTokenV1');
-const usdcProxyArtifacts = require('../../swap/build/contracts/FiatTokenProxy');
+const usdcArtifacts = require('../../swap/build/contracts/FiatTokenV1');
 const proxyArtifacts = require('../../swap/build/contracts/AsProxy');
 const asArtifacts = require('../../swap/build/contracts/AsUSDC');
 
@@ -13,9 +12,8 @@ const AppConfig = require(`../../config/config.json`);
 const sto_abi = require(`../../config/abi.json`);
 
 const usdc = {
-    tokenAddress: usdcTokenArtifacts.networks[AppConfig.network_id].address,
-    proxyAddress: usdcProxyArtifacts.networks[AppConfig.network_id].address,
-    abi: usdcTokenArtifacts.abi
+    address: AppConfig.usdc_address,
+    abi: usdcArtifacts.abi
 };
 
 const proxy = {
