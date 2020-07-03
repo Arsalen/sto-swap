@@ -15,7 +15,7 @@ pipeline {
                     file(credentialsId: "env", variable: "environment"),
                     file(credentialsId: "config", variable: "configuration"),
                     file(credentialsId: "abi", variable: "bytecode"),
-                    file(credentialsId: "net", variable: "network")
+                    file(credentialsId: "net", variable: "network"),
                     file(credentialsId: "pm2", variable: "daemon")
                 ]) {
                     
