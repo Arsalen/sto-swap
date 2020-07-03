@@ -2,6 +2,13 @@ pipeline {
     
     agent any
 
+    parameters {
+
+        choice (
+            name: 'ACTION', choices: ['no build', 'build', 'build and migrate'], description: 'to build or not to build'
+        )
+    }
+
     stages {
 
         stage('Setup') {
@@ -26,6 +33,7 @@ pipeline {
         }
 
         stage('Reset') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
 
                 dir("swap") {
@@ -35,6 +43,7 @@ pipeline {
         }
         
         stage('Build Main') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
                 dir("swap") {
                     sh 'cp main/contracts/* contracts'
@@ -46,6 +55,7 @@ pipeline {
         }
         
         stage('Build USDT') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
                 dir("swap") {
                     sh 'cp tokens/contracts/USDT.sol contracts'
@@ -59,6 +69,7 @@ pipeline {
         }
         
         stage('Build USDC') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
                 dir("swap") {
                     sh 'cp tokens/contracts/USDCProxy.sol contracts'
@@ -73,6 +84,7 @@ pipeline {
         }
         
         stage('Build DAI') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
                 dir("swap") {
                     sh 'cp tokens/contracts/DAI.sol contracts'
@@ -86,6 +98,7 @@ pipeline {
         }
 
         stage('Migrations') {
+            when { expression { params.ACTION == 'build and migrate' } }
             steps {
                 dir("swap") {
                     sh 'cp tokens/migrations/1_initial_migration.js tokens/migrations/2_dai_migration.js tokens/migrations/3_usdt_migration.js tokens/migrations/4_usdctoken_migration.js tokens/migrations/5_usdcproxy_migration.js migrations'
@@ -97,6 +110,7 @@ pipeline {
         }
 
         stage("RUN") {
+            when { expression { params.ACTION == 'build and migrate' } }
             steps {
                 sh "pm2 start pm2.config.js"
             }
