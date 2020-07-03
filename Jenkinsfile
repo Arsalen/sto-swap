@@ -15,7 +15,6 @@ pipeline {
 
             when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('config/abi.json') && !fileExists('net.ini') && !fileExists('pm2.config.js') } }
             steps {
-                sh 'npm i --save'
                 withCredentials([
                     file(credentialsId: "env", variable: "environment"),
                     file(credentialsId: "config", variable: "configuration"),
@@ -29,6 +28,13 @@ pipeline {
                     sh "cp \$network net.ini"
                     sh "cp \$daemon pm2.config.js"
                 }
+            }
+        }
+
+        stage('Build') {
+
+            steps {
+                sh 'npm i --save'
             }
         }
 
