@@ -2,15 +2,20 @@ pipeline {
     
     agent any
 
+    parameters {
+
+        choice (
+            name: 'ACTION', choices: ['no build', 'build', 'build and migrate'], description: 'to build or not to build'
+        )
+    }
+
     stages {
 
         stage('Setup') {
 
             when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('config/abi.json') && !fileExists('net.ini') && !fileExists('pm2.config.js') } }
             
-            steps {
-                
-                sh 'npm i --save'
+            steps {                
                 withCredentials([
                     file(credentialsId: "env", variable: "environment"),
                     file(credentialsId: "config", variable: "configuration"),
@@ -28,8 +33,15 @@ pipeline {
             }
         }
 
+        stage('Build') {
+
+            steps {
+                sh 'npm i --save'
+            }
+        }
+
         stage('Reset') {
-            
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
                 
                 dir("swap") {
@@ -39,8 +51,8 @@ pipeline {
             }
         }
         
-        stage('Build') {
-
+        stage('Build ALL') {
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
 
                 dir("swap") {
@@ -54,7 +66,7 @@ pipeline {
         }
 
         stage('Artifacts') {
-
+            when { expression { params.ACTION == 'build' || params.ACTION == 'build and migrate' } }
             steps {
 
                 dir("swap") {
@@ -66,7 +78,7 @@ pipeline {
         }
 
         stage('Migrations') {
-
+            when { expression { params.ACTION == 'build and migrate' } }
             steps {
 
                 dir("swap") {
@@ -80,6 +92,7 @@ pipeline {
         }
 
         stage("RUN") {
+            when { expression { params.ACTION == 'build and migrate' } }
             steps {
                 sh "pm2 start pm2.config.js"
             }
