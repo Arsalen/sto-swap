@@ -13,7 +13,7 @@ pipeline {
 
         stage('Setup') {
 
-            when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('config/abi.json') && !fileExists('net.ini')} && !fileExists('pm2.config.js') }
+            when { expression { !fileExists('.env') && !fileExists('config/config.json') && !fileExists('config/abi.json') && !fileExists('net.ini') && !fileExists('pm2.config.js') } }
             steps {
                 sh 'npm i --save'
                 withCredentials([
