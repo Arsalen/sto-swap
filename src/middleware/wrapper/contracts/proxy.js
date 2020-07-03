@@ -18,6 +18,12 @@ class ProxyContract {
         });
     }
 
+    withdraw(name, amount, account) {
+        return this._instance.methods.withdraw(name, amount).send({
+            from: account
+        });
+    }
+
 }
 
 module.exports = ProxyContract;
