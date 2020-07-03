@@ -39,4 +39,15 @@ contract AsProxy is Owned {
         address _user = msg.sender;
         IAS(swaps[nameHash]).deposit(_user, _amount);
     }
+
+    /**
+     * @dev withdraw stable token.
+     * @param _name withdraw atomic-swap.
+     * @param _amount withdraw amount.
+     */
+    function withdraw(string memory _name, uint _amount) public {
+        bytes32 nameHash = keccak256(abi.encode(_name));
+        address _user = msg.sender;
+        IAS(swaps[nameHash]).withdraw(_user, _amount);
+    }
 }
